@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth";
 
@@ -31,11 +31,6 @@ export const Route = createFileRoute("/_app/dashboard/settings")({
 function Settings() {
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [savedWorkouts, setSavedWorkouts] = useState<Array<{ id: number; date: string }>>([]);
-  const [healthTracker, setHealthTracker] = useState<{
-    daily?: { water?: number; sleep?: number; workouts?: number };
-    nutritionLogs?: any[];
-  } | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);
@@ -44,24 +39,6 @@ function Settings() {
         setSettings(JSON.parse(saved));
       } catch {
         setSettings(defaultSettings);
-      }
-    }
-
-    const savedWorkoutData = localStorage.getItem("rfs-workouts");
-    if (savedWorkoutData) {
-      try {
-        setSavedWorkouts(JSON.parse(savedWorkoutData));
-      } catch {
-        setSavedWorkouts([]);
-      }
-    }
-
-    const savedHealth = localStorage.getItem("healthTracker");
-    if (savedHealth) {
-      try {
-        setHealthTracker(JSON.parse(savedHealth));
-      } catch {
-        setHealthTracker(null);
       }
     }
   }, []);
@@ -85,47 +62,6 @@ function Settings() {
     }));
   }
 
-  const workoutStreak = useMemo(() => {
-    if (!savedWorkouts.length) return 0;
-
-    const dates = savedWorkouts
-      .map((workout) => new Date(workout.date))
-      .filter((date) => !Number.isNaN(date.getTime()))
-      .map((date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()))
-      .sort((a, b) => b.getTime() - a.getTime());
-
-    let streak = 0;
-    let expected = new Date();
-    expected.setHours(0, 0, 0, 0);
-
-    for (const date of dates) {
-      const diffDays = Math.round((expected.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-      if (streak === 0) {
-        if (diffDays === 0 || diffDays === 1) {
-          streak = 1;
-          expected.setDate(date.getDate() - 1);
-        } else {
-          break;
-        }
-      } else {
-        if (diffDays === 0) {
-          continue;
-        }
-        if (diffDays === 1) {
-          streak += 1;
-          expected.setDate(expected.getDate() - 1);
-        } else {
-          break;
-        }
-      }
-    }
-
-    return streak;
-  }, [savedWorkouts]);
-
-  const nutritionLogs = healthTracker?.nutritionLogs?.length ?? 0;
-  const sleepHours = healthTracker?.daily?.sleep ?? 0;
-  const waterLiters = healthTracker?.daily?.water ?? 0;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -262,40 +198,6 @@ function Settings() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="glass rounded-2xl p-6">
-        <h2 className="font-display font-bold mb-4">Streaks</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="glass rounded-2xl p-4 text-center">
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Workout Streak</div>
-            <div className="text-4xl font-display font-bold neon-text">{workoutStreak}</div>
-            <div className="text-xs text-muted-foreground">consecutive days</div>
-          </div>
-          <div className="glass rounded-2xl p-4 text-center">
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Nutrition Logs</div>
-            <div className="text-4xl font-display font-bold neon-text">{nutritionLogs}</div>
-            <div className="text-xs text-muted-foreground">entries recorded</div>
-          </div>
-          <div className="glass rounded-2xl p-4 text-center">
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Sleep</div>
-            <div className="text-4xl font-display font-bold neon-text">{sleepHours ? `${sleepHours}h` : "—"}</div>
-            <div className="text-xs text-muted-foreground">last logged</div>
-          </div>
-          <div className="glass rounded-2xl p-4 text-center">
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Water</div>
-            <div className="text-4xl font-display font-bold neon-text">{waterLiters ? `${waterLiters}L` : "—"}</div>
-            <div className="text-xs text-muted-foreground">daily hydration</div>
-          </div>
-        </div>
-        <div className="mt-4 grid grid-cols-10 gap-1.5">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <div
-              key={i}
-              className={`aspect-square rounded ${i < Math.min(workoutStreak, 30) ? "bg-neon" : "bg-surface-elevated"}`}
-            />
-          ))}
         </div>
       </div>
 

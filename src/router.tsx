@@ -8,6 +8,7 @@ export const getRouter = () => {
 
   const router = createRouter({
     routeTree,
+    basepath: "/RFS-Akhada",
     history,
     context: { queryClient },
     scrollRestoration: true,
