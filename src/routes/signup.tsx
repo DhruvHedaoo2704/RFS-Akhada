@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import type { FormEvent } from "react";
 import { Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { login } from "@/lib/auth";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({ meta: [{ title: "Join — RFS Akhada" }] }),
@@ -8,6 +10,14 @@ export const Route = createFileRoute("/signup")({
 });
 
 function SignupPage() {
+  const router = useRouter();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    login();
+    router.navigate({ to: "/" });
+  };
+
   return (
     <div className="min-h-screen grid place-items-center px-4 py-10">
       <div className="absolute inset-0 -z-10 opacity-30 bg-[radial-gradient(circle_at_50%_50%,oklch(0.92_0.22_130/0.2),transparent_60%)]" />
@@ -18,12 +28,12 @@ function SignupPage() {
         </Link>
         <h1 className="text-3xl font-display font-bold">Create account</h1>
         <p className="text-muted-foreground text-sm mt-1">Start your transformation in 30 seconds.</p>
-        <form className="mt-6 space-y-3" onSubmit={(e) => { e.preventDefault(); window.location.href = "/dashboard"; }}>
+        <form className="mt-6 space-y-3" onSubmit={handleSubmit}>
           {[
-            { l: "Name", t: "text",placeholder:"Enter name"},
-            { l: "Email", t: "email",placeholder:"Enter Email" },
-            { l: "Password", t: "password",placeholder:"Enter Password" },
-          ].map(f => (
+            { l: "Name", t: "text", placeholder: "Enter name" },
+            { l: "Email", t: "email", placeholder: "Enter Email" },
+            { l: "Password", t: "password", placeholder: "Enter Password" },
+          ].map((f) => (
             <div key={f.l}>
               <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">{f.l}</label>
               <input type={f.t} required placeholder={f.placeholder} className="w-full mt-1 px-4 py-2.5 rounded-lg bg-surface-elevated border border-border focus:border-neon/60 outline-none" />
@@ -32,13 +42,18 @@ function SignupPage() {
           <div>
             <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Fitness Goal</label>
             <select className="w-full mt-1 px-4 py-2.5 rounded-lg bg-surface-elevated border border-border focus:border-neon/60 outline-none">
-              <option>Fat Loss</option><option>Muscle Gain</option><option>Strength</option><option>Endurance</option>
+              <option>Fat Loss</option>
+              <option>Muscle Gain</option>
+              <option>Strength</option>
+              <option>Endurance</option>
             </select>
           </div>
           <div>
             <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Experience</label>
             <select className="w-full mt-1 px-4 py-2.5 rounded-lg bg-surface-elevated border border-border focus:border-neon/60 outline-none">
-              <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
             </select>
           </div>
           <Button type="submit" className="w-full bg-neon text-neon-foreground hover:bg-neon/90 mt-2">Create Account</Button>

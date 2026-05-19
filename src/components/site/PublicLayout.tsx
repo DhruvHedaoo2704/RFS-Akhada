@@ -18,7 +18,7 @@ export function PublicLayout() {
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 glass-strong">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/public" className="flex items-center gap-2 group">
             <span className="size-9 rounded-xl gradient-neon grid place-items-center text-neon-foreground">
               <Flame className="size-5" />
             </span>
@@ -65,7 +65,7 @@ export function PublicLayout() {
             <h4 className="text-sm font-semibold mb-3">Product</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/public/programs" className="hover:text-neon">Programs</Link></li>
-              <li><Link to="/" className="hover:text-neon">Dashboard</Link></li>
+              <li><Link to="/public" className="hover:text-neon">Home</Link></li>
             </ul>
           </div>
           <div>

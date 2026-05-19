@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { logout } from "@/lib/auth";
 
 const defaultSettings = {
   profile: {
@@ -17,6 +18,7 @@ const defaultSettings = {
   }
 };
 
+
 const storageKey = "rfs-user-settings";
 
 type Settings = typeof defaultSettings;
@@ -27,6 +29,7 @@ export const Route = createFileRoute("/_app/dashboard/settings")({
 });
 
 function Settings() {
+  const navigate = useNavigate();
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [savedWorkouts, setSavedWorkouts] = useState<Array<{ id: number; date: string }>>([]);
   const [healthTracker, setHealthTracker] = useState<{
@@ -392,7 +395,16 @@ function Settings() {
 
       <div className="flex gap-3">
         <Button type="submit" className="bg-neon text-neon-foreground hover:bg-neon/90">Save Changes</Button>
-        <Button asChild variant="outline"><Link to="/">Sign Out</Link></Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            logout();
+            navigate({ to: "/public" });
+          }}
+        > 
+          Sign Out
+        </Button>
       </div>
     </form>
   );

@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "@tanstack/react-router";
+import { Link, Outlet, useLocation, useRouter } from "@tanstack/react-router";
 import {
   LayoutDashboard, Brain, ShieldCheck, HeartPulse, TrendingUp, LineChart,
   Camera, Calculator, Utensils, Apple, BookOpen, MessageCircle, Trophy,
@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDynamicTheme } from "@/hooks/use-dynamic-theme";
+import { logout } from "@/lib/auth";
 
 const userSettingsKey = "rfs-user-settings";
 
@@ -47,6 +48,7 @@ const bottomNav = nav.slice(0, 5);
 
 export function DashboardLayout() {
   const loc = useLocation();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [userInitial, setUserInitial] = useState("A");
   useDynamicTheme();
@@ -135,6 +137,15 @@ export function DashboardLayout() {
             <Bell className="size-5" />
             <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-neon" />
           </button>
+            <button
+              onClick={() => {
+                logout();
+                router.navigate({ to: "/public" });
+              }}
+              className="hidden sm:inline-flex items-center rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:bg-surface-elevated"
+            >
+              Logout
+            </button>
           <div className="size-9 rounded-full gradient-neon grid place-items-center text-neon-foreground font-bold text-sm">{userInitial}</div>
         </header>
 
